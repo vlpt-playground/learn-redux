@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import './WaitingList.css';
 
 const WaitingItem = ({ text, entered, onEnter, onLeave }) => {
@@ -43,4 +44,4 @@ const WaitingList = ({
   );
 };
 
-export default WaitingList;
+export default observer(WaitingList);
