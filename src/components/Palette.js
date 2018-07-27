@@ -13,13 +13,18 @@ const PaletteItem = ({ color, active, onClick }) => {
   );
 };
 
-const Palette = ({ selected }) => {
+const Palette = ({ selected, onSelect }) => {
   return (
     <div className="Palette">
       <h2>색깔을 골라골라</h2>
       <div className="colors">
         {colors.map(color => (
-          <PaletteItem color={color} key={color} active={selected === color} />
+          <PaletteItem
+            color={color}
+            key={color}
+            active={selected === color}
+            onClick={() => onSelect(color)}
+          />
         ))}
       </div>
     </div>
