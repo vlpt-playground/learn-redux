@@ -1,33 +1,39 @@
 import React, { Component, Fragment } from 'react';
-import { observer } from 'mobx-react';
-import { observable } from 'mobx';
+import { observer, inject } from 'mobx-react';
 import Counter from '../components/Counter';
 import Palette from '../components/Palette';
 
+@inject(stores => {
+  return {
+    number: stores.counter.number,
+    color: stores.counter.color,
+    increment: stores.counter.increment,
+    decrement: stores.counter.decrement,
+    setColor: stores.counter.setColor,
+  };
+})
 @observer
 class ColorfulCounter extends Component {
-  @observable number = 0;
-  @observable color = 'red';
-
   handleSelectColor = color => {
-    this.color = color;
+    this.props.setColor(color);
   };
 
   handleIncrement = () => {
-    this.number++;
+    this.props.increment();
   };
 
   handleDecrement = () => {
-    this.number--;
+    this.props.decrement();
   };
 
   render() {
+    const { color, number } = this.props;
     return (
       <Fragment>
-        <Palette selected={this.color} onSelect={this.handleSelectColor} />
+        <Palette selected={color} onSelect={this.handleSelectColor} />
         <Counter
-          value={this.number}
-          color={this.color}
+          value={number}
+          color={color}
           onIncrement={this.handleIncrement}
           onDecrement={this.handleDecrement}
         />
