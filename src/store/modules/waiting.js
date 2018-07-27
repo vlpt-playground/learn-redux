@@ -1,4 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
+import produce from 'immer'; // **** Immer 불러오기
 
 const CHANGE_INPUT = 'waiting/CHANGE_INPUT'; // 인풋 값 변경
 const CREATE = 'waiting/CREATE'; // 명단에 이름 추가
@@ -34,34 +35,34 @@ const initialState = {
   ],
 };
 
-// **** handleActions 로 리듀서 함수 작성
+// handleActions 로 리듀서 함수 작성
+// **** 내부 업데이트 로직 모두 업데이트
 export default handleActions(
   {
-    [CHANGE_INPUT]: (state, action) => ({
-      ...state,
-      input: action.payload,
-    }),
-    [CREATE]: (state, action) => ({
-      ...state,
-      list: state.list.concat({
-        id: action.payload.id,
-        name: action.payload.text,
-        entered: false,
+    [CHANGE_INPUT]: (state, action) =>
+      produce(state, draft => {
+        draft.input = action.payload;
       }),
-    }),
-    [ENTER]: (state, action) => ({
-      ...state,
-      list: state.list.map(
-        item =>
-          item.id === action.payload
-            ? { ...item, entered: !item.entered }
-            : item
-      ),
-    }),
-    [LEAVE]: (state, action) => ({
-      ...state,
-      list: state.list.filter(item => item.id !== action.payload),
-    }),
+    [CREATE]: (state, action) =>
+      produce(state, draft => {
+        draft.list.push({
+          id: action.payload.id,
+          name: action.payload.text,
+          entered: false,
+        });
+      }),
+    [ENTER]: (state, action) =>
+      produce(state, draft => {
+        const item = draft.list.find(item => item.id === action.payload);
+        item.entered = !item.entered;
+      }),
+    [LEAVE]: (state, action) =>
+      produce(state, draft => {
+        draft.list.splice(
+          draft.list.findIndex(item => item.id === action.payload),
+          1
+        );
+      }),
   },
   initialState
 );
