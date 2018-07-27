@@ -24,11 +24,12 @@ class CounterContainer extends Component {
 }
 
 const mapStateToProps = ({ counter }) => ({
-  color: counter.color,
-  number: counter.number,
+  // **** .get 을 사용해서 값 조회
+  color: counter.get('color'),
+  number: counter.get('number'),
 });
 
-// **** 함수가 아닌 객체 설정시 자동 bindActionCreators 됨
+// 함수가 아닌 객체 설정시 자동 bindActionCreators 됨
 const mapDispatchToProps = { increment, decrement };
 
 export default connect(
